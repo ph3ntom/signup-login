@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>회원가입</title>
+    <link rel="stylesheet" href="style2.css">
+    <script>
+        function validateForm() {
+            // 정규표현식을 사용한 유효성 검사
+            const idPattern = /^[a-zA-Z0-9]{5,}$/;
+            const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+            const namePattern = /^[가-힣]{2,}$/;
+            const phonePattern = /^\d{3}-\d{3,4}-\d{4}$/;
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            const id = document.getElementById('id').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const name = document.getElementById('name').value;
+            const phone = document.getElementById('phone').value;
+            const email = document.getElementById('email').value;
+
+            if (!idPattern.test(id)) {
+                alert("아이디는 5자 이상의 영문자와 숫자로 구성되어야 합니다.");
+                return false;
+            }
+            if (!passwordPattern.test(password)) {
+                alert("비밀번호는 8자 이상, 대소문자, 숫자, 특수문자를 포함해야 합니다.");
+                return false;
+            }
+            if (password !== confirmPassword) {
+                alert("비밀번호와 비밀번호 확인이 일치하지 않습니다.");
+                return false;
+            }
+            if (!namePattern.test(name)) {
+                alert("이름은 2자 이상의 한글로 구성되어야 합니다.");
+                return false;
+            }
+            if (!phonePattern.test(phone)) {
+                alert("전화번호 형식이 올바르지 않습니다. 예: 010-1234-5678");
+                return false;
+            }
+            if (!emailPattern.test(email)) {
+                alert("이메일 형식이 올바르지 않습니다.");
+                return false;
+            }
+
+            return true;
+        }
+
+        function submitForm(event) {
+            event.preventDefault();
+            if (!validateForm()) {
+                return;
+            }
+
+            const formData = new FormData(document.getElementById('signupForm'));
+
+            fetch('signup.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log('success : ', data);
+                    alert('회원가입 성공!');
+                } else {
+                    alert('회원가입 실패: ' + data.message);
+                }
+            })
+            .catch(error => {
+                alert('회원가입 실패: 서버 오류');
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</head>
+<body>
+    <div class="signup-box">
+        <h2>Sign Up</h2>
+        <form id="signupForm" onsubmit="submitForm(event)">
+            <div class="user-box">
+                <input type="text" id="id" name="id" required>
+                <label>ID</label>
+              </div>
+              <div class="user-box">
+                <input type="password" id="password" name="password" required>
+                <label>PW</label>
+              </div>
+              <div class="user-box">
+                <input type="password" id="confirmPassword" required>
+                <label>PW_V</label>
+              </div>
+              <div class="user-box">
+                <input type="text" id="name" name="name" required>
+                <label>Username</label>
+              </div>
+            <div class="user-box">
+                <input type="text" id="phone" name="phone" required>
+                <label>Phone</label>
+            </div>
+            <div class="user-box">
+                <input type="email" id="email" name="email" required>
+                <label>Email</label>
+            </div>
+          <button type="submit" class="submit-button">Submit</button>
+        </form>
+      </div>
+</body>
+</html>
