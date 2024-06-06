@@ -46,8 +46,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     echo json_encode($response);
 }
 
-// 세션 유효 시간 제한 (2시간)
-if (isset($_SESSION['login_time']) && time() - $_SESSION['login_time'] > 7200) { // 2시간 = 7200초
+// 세션 유효 시간 제한 (30분)
+if (isset($_SESSION['login_time']) && time() - $_SESSION['login_time'] > 1800) { // 2시간 = 7200초
     // 세션 만료 시 로그아웃 처리
     session_unset();
     session_destroy();
