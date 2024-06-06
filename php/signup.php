@@ -2,7 +2,7 @@
 header('Content-Type: application/json');
 
 $servername = "localhost";
-$username = "root";
+$username = "dev";
 $password = "Phantom0219?";
 $dbname = "auth";
 

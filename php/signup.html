@@ -60,7 +60,12 @@
                 method: 'POST',
                 body: formData
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('서버 응답 오류: ' + response.statusText);
+                }
+                return response.json();
+            })
             .then(data => {
                 if (data.success) {
                     console.log('success : ', data);
@@ -70,10 +75,36 @@
                 }
             })
             .catch(error => {
-                alert('회원가입 실패: 서버 오류');
+                // 서버로부터 예상치 못한 HTML 응답을 받았을 때의 처리
+                alert('회원가입 실패: 서버 오류 또는 네트워크 문제가 발생했습니다.');
                 console.error('Error:', error);
             });
         }
+
+        function checkId() {
+            const id = document.getElementById('id').value;
+            const formData = new FormData();
+            formData.append('id', id);
+
+            fetch('id_check.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.isAvailable) {
+                    alert('사용 가능한 아이디입니다.');
+                } else {
+                    alert('이미 사용 중인 아이디입니다.');
+                    document.getElementById('id').focus();
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('오류가 발생했습니다. 다시 시도해주세요.');
+            });
+        }
+
     </script>
 </head>
 <body>
@@ -83,19 +114,22 @@
             <div class="user-box">
                 <input type="text" id="id" name="id" required>
                 <label>ID</label>
-              </div>
-              <div class="user-box">
+            </div>
+
+            <button type="button" class="submit-button" onclick="checkId()">중복 검사</button>
+
+            <div class="user-box">
                 <input type="password" id="password" name="password" required>
                 <label>PW</label>
-              </div>
-              <div class="user-box">
+            </div>
+            <div class="user-box">
                 <input type="password" id="confirmPassword" required>
                 <label>PW_V</label>
-              </div>
-              <div class="user-box">
+            </div>
+            <div class="user-box">
                 <input type="text" id="name" name="name" required>
                 <label>Username</label>
-              </div>
+            </div>
             <div class="user-box">
                 <input type="text" id="phone" name="phone" required>
                 <label>Phone</label>
