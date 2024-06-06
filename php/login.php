@@ -1,16 +1,13 @@
 <?php
-session_start(); // 세션 시작
+session_start();
 
-// MySQL 연결 정보
 $servername = "localhost";
 $username = "dev";
 $password = "Phantom0219?";
 $database = "auth";
 
-// MySQL 연결 생성
 $conn = new mysqli($servername, $username, $password, $database);
 
-// MySQL 연결 확인
 if ($conn->connect_error) {
     die("MySQL 연결 실패: " . $conn->connect_error);
 }
@@ -41,19 +38,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $response = array('success' => false, 'error' => 'Invalid username or password');
     }
 
-    // JSON 형식으로 응답 보내기
     header('Content-Type: application/json');
     echo json_encode($response);
 }
 
 // 세션 유효 시간 제한 (30분)
-if (isset($_SESSION['login_time']) && time() - $_SESSION['login_time'] > 1800) { // 2시간 = 7200초
+if (isset($_SESSION['login_time']) && time() - $_SESSION['login_time'] > 1800) { 
     // 세션 만료 시 로그아웃 처리
     session_unset();
     session_destroy();
 }
 
-// MySQL 연결 닫기
 $stmt->close();
 $conn->close();
 ?>
