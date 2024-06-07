@@ -2,7 +2,7 @@
 session_start();
 
 $servername = "localhost";
-$username = "dev";
+$username = "root";
 $password = "Phantom0219?";
 $database = "auth";
 
