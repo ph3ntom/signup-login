@@ -2,7 +2,7 @@
 header('Content-Type: application/json');
 
 $servername = "localhost";
-$username = "dev";
+$username = "root";
 $password = "Phantom0219?";
 $dbname = "auth";
 
@@ -30,7 +30,7 @@ $emailPattern = '/^[^\s@]+@[^\s@]+\.[^\s@]+$/';
 
 if (!preg_match($idPattern, $id)) {
     $errorMessage = '아이디는 5자 이상의 영문자와 숫자로 구성되어야 합니다.';
-    error_log($errorMessage); // 오류 메시지를 로그 파일에 기록
+    error_log($errorMessage);
     echo json_encode(['success' => false, 'message' => $errorMessage]);
     exit;
 }
@@ -59,17 +59,20 @@ if (!preg_match($emailPattern, $email)) {
     exit;
 }
 
+// 비밀번호를 SHA-256으로 해싱
+$hashedPassword = hash('sha256', $password);
+
 $sql = "INSERT INTO member (username, password, name, phone, email)
 VALUES (?, ?, ?, ?, ?)";
 
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("sssss", $id, $password, $name, $phone, $email);
+$stmt->bind_param("sssss", $id, $hashedPassword, $name, $phone, $email);
 
 if ($stmt->execute()) {
     echo json_encode(['success' => true]);
 } else {
     $errorMessage = '회원 가입에 실패했습니다.';
-    error_log($errorMessage); // 오류 메시지를 로그 파일에 기록
+    error_log($errorMessage);
     echo json_encode(['success' => false, 'message' => $errorMessage]);
 }
 
